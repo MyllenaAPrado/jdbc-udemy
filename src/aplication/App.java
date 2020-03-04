@@ -12,21 +12,27 @@ public class App {
 
 		// for create a sellerDao and hide the method
 		SellerDao sellerDao = DaoFactory.createSellerDao();
-		
-		//findById method
-		System.out.println("=== Testes1: ===");
+
+		// findById method
+		System.out.println("=== Teste 1: ===");
 		Seller seller = sellerDao.findById(2);
 		System.out.println(seller);
 
-		//findByDepartment method
-		System.out.println("=== Testes2: ===");
-		List<Seller> seller2 = sellerDao.findByDepartment("Electronics");
-		for (Seller s : seller2) {
+		// findByDepartment method
+		System.out.println();
+		System.out.println("=== Teste 2: ===");
+		List<Seller> listSeller = sellerDao.findByDepartment("Electronics");
+		for (Seller s : listSeller) {
 			System.out.println(s);
 		}
-		
-		
-		
+
+		// findAll method
+		System.out.println();
+		System.out.println("=== Teste 3: ===");
+		listSeller = sellerDao.findAll();
+		for (Seller s : listSeller) {
+			System.out.println(s);
+		}
 
 	}
 

@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -86,7 +88,6 @@ public class SellerDaoJDBC implements SellerDao {
 		ResultSet rs = null;
 
 		try {
-			List<Seller> listSeller = new ArrayList<Seller>();
 
 			// querrie for find the seller and the result of the search
 			st = conn.prepareStatement(
@@ -96,17 +97,24 @@ public class SellerDaoJDBC implements SellerDao {
 			st.setString(1, nameDepartment);
 			rs = st.executeQuery();
 
+			List<Seller> listSeller = new ArrayList<Seller>();
+			Map<Integer, Department> map = new HashMap<>();
+
 			// check if it's not null the result
-			if (rs.next()) {
-				// created a new department
-				Department department = new Department(rs.getInt("DepartmentId"), rs.getString("DepName"));
+			while (rs.next()) {
+
+				// use the map
+				Department department = map.get(rs.getInt("DepartmentId"));
+				if (department == null) {
+					// created a new department
+					department = new Department(rs.getInt("DepartmentId"), rs.getString("DepName"));
+					map.put(rs.getInt("DepartmentId"), department);
+				}
+				// created a new seller
+				Seller seller = new Seller(rs.getInt("Id"), rs.getString("Name"), rs.getString("Email"),
+						rs.getDate("BirthDate"), rs.getDouble("BaseSalary"), department);
 				
-				do {
-					// created a new seller
-					Seller seller = new Seller(rs.getInt("Id"), rs.getString("Name"), rs.getString("Email"),
-							rs.getDate("BirthDate"), rs.getDouble("BaseSalary"), department);
-					listSeller.add(seller);
-				}while(rs.next());
+				listSeller.add(seller);
 			}
 
 			if (listSeller.isEmpty()) {
@@ -126,10 +134,59 @@ public class SellerDaoJDBC implements SellerDao {
 		}
 	}
 
+	
 	@Override
 	public List<Seller> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		try {
+
+			// querrie for find the seller and the result of the search
+			st = conn.prepareStatement(
+								"SELECT seller.*,department.Name as DepName " 
+								+ "FROM seller INNER JOIN department "
+								+ "ON seller.DepartmentId = department.Id "
+								+ "ORDER BY department.Name");
+
+			rs = st.executeQuery();
+
+			List<Seller> listSeller = new ArrayList<Seller>();
+			Map<Integer, Department> map = new HashMap<>();
+
+			// check if it's not null the result
+			while (rs.next()) {
+
+				// use the map
+				Department department = map.get(rs.getInt("DepartmentId"));
+				if (department == null) {
+					// created a new department
+					department = new Department(rs.getInt("DepartmentId"), rs.getString("DepName"));
+					map.put(rs.getInt("DepartmentId"), department);
+				}
+				// created a new seller
+				Seller seller = new Seller(rs.getInt("Id"), rs.getString("Name"), rs.getString("Email"),
+						rs.getDate("BirthDate"), rs.getDouble("BaseSalary"), department);
+				
+				listSeller.add(seller);
+			}
+
+			if (listSeller.isEmpty()) {
+				// return null if don't find the seller
+				return null;
+			}
+			return listSeller;
+
+		} catch (SQLException e) {
+
+			throw new DbException(e.getMessage());
+
+		} finally {
+
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
 	}
 
 }
