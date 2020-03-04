@@ -19,8 +19,6 @@ import entities.Seller;
 import interfaces.SellerDao;
 
 public class SellerDaoJDBC implements SellerDao {
-	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
 	private Connection conn;
 
 	public SellerDaoJDBC(Connection conn) {
