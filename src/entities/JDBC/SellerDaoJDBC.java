@@ -29,40 +29,34 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void insert(Seller seller) {
-		// TODO Auto-generated method stub
 		PreparedStatement st = null;
 
 		try {
 
-			// querrie for find the seller and the result of the search
-			st = conn.prepareStatement(
-					"INSERT INTO seller "
-				+ "(Name, Email, BirthDate, BaseSalary, DepartmentId )"
-				+ "VALUES "
-				+ "(?, ?, ?, ?, ?)",
-				Statement.RETURN_GENERATED_KEYS);
+			// querrie for insert the seller
+			st = conn.prepareStatement("INSERT INTO seller " + "(Name, Email, BirthDate, BaseSalary, DepartmentId )"
+					+ "VALUES " + "(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, seller.getName());
 			st.setString(2, seller.getEmail());
 			st.setDate(3, new java.sql.Date(seller.getBirthDate().getTime()));
 			st.setDouble(4, seller.getBaseSalary());
 			st.setInt(5, seller.getDepartment().getId());
-			
+
 			int rowsAffected = st.executeUpdate();
 			if (rowsAffected > 0) {
-				
+
 				System.out.println("Done! Rows affected:" + rowsAffected);
 				ResultSet rs = st.getGeneratedKeys();
-				
+
 				if (rs.next()) {
 					int id = rs.getInt(1);
 					seller.setId(id);
 				}
 				DB.closeResultSet(rs);
-			}
-			else {
+			} else {
 				throw new SQLException("Unexpected error!");
 			}
-					
+
 		} catch (SQLException e) {
 
 			throw new DbException(e.getMessage());
@@ -75,7 +69,33 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void update(Seller seller) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+
+		try {
+
+			// querrie for uptade the seller
+			st = conn.prepareStatement("UPDATE seller "
+									+ "SET Name = ?, Email = ?, BirthDate = ?, "
+									+ "BaseSalary = ?, DepartmentId = ? " 
+									+ "WHERE ID = ?");
+
+			st.setString(1, seller.getName());
+			st.setString(2, seller.getEmail());
+			st.setDate(3, new java.sql.Date(seller.getBirthDate().getTime()));
+			st.setDouble(4, seller.getBaseSalary());
+			st.setInt(5, seller.getDepartment().getId());
+			st.setInt(6, seller.getId());
+
+			st.executeUpdate();
+		
+		}catch (SQLException e) {
+
+			throw new DbException(e.getMessage());
+
+		} finally {
+
+			DB.closeStatement(st);
+		}
 
 	}
 
@@ -157,7 +177,7 @@ public class SellerDaoJDBC implements SellerDao {
 				// created a new seller
 				Seller seller = new Seller(rs.getInt("Id"), rs.getString("Name"), rs.getString("Email"),
 						rs.getDate("BirthDate"), rs.getDouble("BaseSalary"), department);
-				
+
 				listSeller.add(seller);
 			}
 
@@ -180,7 +200,7 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public List<Seller> findAll() {
-		
+
 		PreparedStatement st = null;
 		ResultSet rs = null;
 
@@ -188,10 +208,8 @@ public class SellerDaoJDBC implements SellerDao {
 
 			// querrie for find the seller and the result of the search
 			st = conn.prepareStatement(
-								"SELECT seller.*,department.Name as DepName " 
-								+ "FROM seller INNER JOIN department "
-								+ "ON seller.DepartmentId = department.Id "
-								+ "ORDER BY department.Name");
+					"SELECT seller.*,department.Name as DepName " + "FROM seller INNER JOIN department "
+							+ "ON seller.DepartmentId = department.Id " + "ORDER BY department.Name");
 
 			rs = st.executeQuery();
 
@@ -211,7 +229,7 @@ public class SellerDaoJDBC implements SellerDao {
 				// created a new seller
 				Seller seller = new Seller(rs.getInt("Id"), rs.getString("Name"), rs.getString("Email"),
 						rs.getDate("BirthDate"), rs.getDouble("BaseSalary"), department);
-				
+
 				listSeller.add(seller);
 			}
 

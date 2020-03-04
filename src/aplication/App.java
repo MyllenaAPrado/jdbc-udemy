@@ -38,12 +38,22 @@ public class App {
 			System.out.println(s);
 		}
 
-		// Insert in seller
+		// Insert method
 		System.out.println();
-		System.out.println("=== Teste 3: ===");		
-		Seller sel = new Seller(0, "Joaquim", "Joaq@gmail.com", sdf.parse("14/09/1978"), 4000.0, 
-								new Department(3, "Fashion"));
+		System.out.println("=== Teste 4: ===");
+		Seller sel = new Seller(0, "Joaquim", "Joaq@gmail.com", sdf.parse("14/09/1978"), 4000.0,
+				new Department(3, "Fashion"));
 		sellerDao.insert(sel);
+
+		// Update method
+		System.out.println();
+		System.out.println("=== Teste 5: ===");
+		seller = sellerDao.findById(1);
+		seller.setName("Maria");
+		sellerDao.update(seller);
+		System.out.println("Update completed");
+		
+		
 
 	}
 
