@@ -10,6 +10,7 @@ import java.util.List;
 import db.DB;
 import db.DbException;
 import entities.Department;
+import entities.Seller;
 import interfaces.DepartmentDao;
 
 public class DepartmentDaoJDBC implements DepartmentDao {
@@ -25,7 +26,6 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		PreparedStatement st = null;
 
 		try {
-
 			// query for insert the seller
 			st = conn.prepareStatement("INSERT INTO department " + "(Name )"
 					+ "VALUES " + "(?)", Statement.RETURN_GENERATED_KEYS);
@@ -59,7 +59,6 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
 	@Override
 	public void update(Department department) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -93,8 +92,37 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
 	@Override
 	public Department findById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		try {
+			// querrie for find the seller and the result of the search
+			st = conn.prepareStatement(	"SELECT * FROM department "
+									    + "WHERE Id = ?");
+			st.setInt(1, id);
+			rs = st.executeQuery();
+
+			// check if it's not null the result
+			if (rs.next()) {
+
+				// created a new department
+				Department department = new Department(rs.getInt("Id"), rs.getString("Name"));
+				return department;
+			}
+
+			// return null if don't find the seller
+			return null;
+
+		} catch (SQLException e) {
+
+			throw new DbException(e.getMessage());
+
+		} finally {
+
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
 	}
 
 	@Override
