@@ -53,7 +53,7 @@ public class App {
 		sellerDao.update(seller);
 		System.out.println("Update completed");
 
-		// Update method
+		// delete method
 		System.out.println();
 		System.out.println("=== Teste 6: ===");
 		sellerDao.delete(9);

@@ -18,6 +18,12 @@ public class AppDepartment {
 		Department department = new Department(0, "Filmes");
 		departmentDao.insert(department);
 
+		// delete method
+		System.out.println();
+		System.out.println("=== Teste 2: ===");
+		departmentDao.deleteById(6);
+		System.out.println("Delete completed");
+
 	}
 
 }
