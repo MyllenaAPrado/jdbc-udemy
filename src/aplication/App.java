@@ -49,12 +49,15 @@ public class App {
 		System.out.println();
 		System.out.println("=== Teste 5: ===");
 		seller = sellerDao.findById(1);
-		seller.setName("Maria");
+		seller.setName("bob");
 		sellerDao.update(seller);
 		System.out.println("Update completed");
-		
-		
 
+		// Update method
+		System.out.println();
+		System.out.println("=== Teste 6: ===");
+		sellerDao.delete(9);
+		System.out.println("Delete completed");
 	}
 
 }

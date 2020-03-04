@@ -74,10 +74,8 @@ public class SellerDaoJDBC implements SellerDao {
 		try {
 
 			// querrie for uptade the seller
-			st = conn.prepareStatement("UPDATE seller "
-									+ "SET Name = ?, Email = ?, BirthDate = ?, "
-									+ "BaseSalary = ?, DepartmentId = ? " 
-									+ "WHERE ID = ?");
+			st = conn.prepareStatement("UPDATE seller " + "SET Name = ?, Email = ?, BirthDate = ?, "
+					+ "BaseSalary = ?, DepartmentId = ? " + "WHERE ID = ?");
 
 			st.setString(1, seller.getName());
 			st.setString(2, seller.getEmail());
@@ -87,8 +85,8 @@ public class SellerDaoJDBC implements SellerDao {
 			st.setInt(6, seller.getId());
 
 			st.executeUpdate();
-		
-		}catch (SQLException e) {
+
+		} catch (SQLException e) {
 
 			throw new DbException(e.getMessage());
 
@@ -100,9 +98,30 @@ public class SellerDaoJDBC implements SellerDao {
 	}
 
 	@Override
-	public void delete(int it) {
-		// TODO Auto-generated method stub
+	public void delete(int id) {
+		PreparedStatement st = null;
+		try {
+			//querie for delete the seller
+			st = conn.prepareStatement("DELETE FROM seller " + "WHERE Id = ?");
+			st.setInt(1, id);
+			
+			int rowsAffected = st.executeUpdate();
+			if (rowsAffected > 0) {
+				System.out.println("Done! Rows affected:" + rowsAffected);
+				
+			} else {
+				throw new SQLException("Unexpected error!");
+				
+			}
+		} catch (SQLException e) {
 
+			throw new DbException(e.getMessage());
+
+		} finally {
+
+			DB.closeStatement(st);
+
+		}
 	}
 
 	@Override
