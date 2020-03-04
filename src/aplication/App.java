@@ -2,8 +2,10 @@ package aplication;
 
 import java.util.Date;
 
-import entites.Department;
-import entites.Seller;
+import entities.Department;
+import entities.Seller;
+import entities.factory.DaoFactory;
+import interfaces.SellerDao;
 
 public class App {
 
@@ -12,6 +14,9 @@ public class App {
 		Department department = new Department(2, "bolsas");
 		Seller seller = new Seller(21,  "bob", "bob@gmail.com", new Date(), 3000.00, department);
 		System.out.println(seller);
+		
+		//for create a sellerDao and hide the method 
+		SellerDao sellerDao = DaoFactory.createSellerDao();
 
 //		// DB is not instantiated because it's a service
 //		Connection conn = null;
