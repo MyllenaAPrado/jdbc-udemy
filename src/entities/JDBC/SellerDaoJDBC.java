@@ -130,7 +130,7 @@ public class SellerDaoJDBC implements SellerDao {
 
 		try {
 
-			// querrie for find the seller and the result of the search
+			// query for find the seller and the result of the search
 			st = conn.prepareStatement(
 					"SELECT seller.*,department.name as DepName " + "FROM seller INNER JOIN department "
 							+ "ON seller.DepartmentId = department.Id " + "WHERE seller.Id = ?");
